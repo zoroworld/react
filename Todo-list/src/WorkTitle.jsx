@@ -1,61 +1,76 @@
 import { useState } from "react";
-import './App.css'
+import "./App.css";
 
-// eslint-disable-next-line react/prop-types
-function WorkTitle({title, workList, setWorkList}){
+function WorkTitle({ title, workList, setWorkList }) {
+  const [isEdit, setIsEdit] = useState(false);
+  const [newTitle, setNewTitle] = useState(title);
 
-    const[isEdit, setIsEdit] = useState(false);
-    const[newTitle, SetNewTitle] = useState(title);
+  // Handle delete action
+  const handleDelete = (targetTitle) => {
+    const updatedList = workList.filter((item) => item !== targetTitle);
+    setWorkList(updatedList);
+    setIsEdit(false);
+  };
 
-    function handleDelete(checketitle){
-        // eslint-disable-next-line react/prop-types
-        let deleteTitle = workList.filter((item) => (item !== checketitle));
-        setWorkList(deleteTitle);
-        setIsEdit(false);
-    }
+  // Handle entering edit mode
+  const handleEdit = () => {
+    setIsEdit(true);
+  };
 
-    function handleEdit(){
-       setIsEdit(true);
-    }
+  // Handle input change for new title
+  const handleNewTitleChange = (e) => {
+    setNewTitle(e.target.value);
+  };
 
-    function handleNewTitleChange(e){
-        SetNewTitle(e.target.value);
-    }
+  // Save the edited title
+  const handleSave = () => {
+    const updatedList = workList.map((item) => (item === title ? newTitle : item));
+    setWorkList(updatedList);
+    setIsEdit(false);
+  };
 
-    function handleSave(){
-       // eslint-disable-next-line react/prop-types
-       let newTitlechange = workList.map((item)=>(item === title ? newTitle : title));
-       setWorkList(newTitlechange);
-       setIsEdit(false);
-    }
+  // Cancel edit action
+  const handleCancel = () => {
+    setNewTitle(title); // Revert to original title
+    setIsEdit(false);
+  };
 
-    function handleCancel(){
-       SetNewTitle(title)
-       setIsEdit(false)
-    }
-
-    return(<>
-      <div>
-        {isEdit?
-            <>
-            <div>
-                <input type="text" value={newTitle} onChange={(e) => handleNewTitleChange(e)}/>
-                <button type='button' className='' onClick={handleSave}>SAVE</button>
-                <button type='button' className='' onClick={handleCancel}>CANCEL</button>
-            </div>
-            </>
-        :
-        <>
-            <div className="tit-container">
-                <h1>{title}</h1>
-                <button type='button' className='' onClick={() => handleDelete(title)}>DELETE</button>
-                <button type='button' className='' onClick={handleEdit}>EDIT</button>
-            </div>
-        </>
-        }
-      </div>
-    </>)
+  return (
+    <div className="task-item">
+      {isEdit ? (
+        <div className="edit-container">
+          <input
+            type="text"
+            value={newTitle}
+            onChange={handleNewTitleChange}
+            className="edit-input"
+          />
+          <button type="button" className="save-button" onClick={handleSave}>
+            SAVE
+          </button>
+          <button type="button" className="cancel-button" onClick={handleCancel}>
+            CANCEL
+          </button>
+        </div>
+      ) : (
+        <div className="task-container">
+          <h2 className="task-title">{title}</h2>
+          <div>
+          <button
+            type="button"
+            className="delete-button"
+            onClick={() => handleDelete(title)}
+          >
+            DELETE
+          </button>
+          <button type="button" className="edit-button" onClick={handleEdit}>
+            EDIT
+          </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
-
 
 export default WorkTitle;

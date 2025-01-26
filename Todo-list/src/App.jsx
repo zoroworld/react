@@ -1,43 +1,55 @@
-
-import { useState } from 'react'
-import './App.css'
-import WorkTitle from './WorkTitle';
+import { useState } from "react";
+import "./App.css";
+import WorkTitle from "./WorkTitle";
 
 function App() {
-
-  const[title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const [workList, setWorkList] = useState([]);
 
-  function handleTextChange(e){
-     setTitle(e.target.value);
-  }
+  // Handle input change
+  const handleInputChange = (e) => {
+    setTitle(e.target.value);
+  };
 
-  function handleSubmit(){
-    setWorkList((prev) => [...workList , title]);
-    setTitle('')
-  }
+  // Add new task
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent page refresh
+    if (title.trim()) {
+      setWorkList((prev) => [...prev, title.trim()]);
+      setTitle(""); // Clear input
+    }
+  };
 
   return (
-    <>
-      <div>
-        <h1>TODO LIST</h1>
-        <div className='addtextcont'>
-            <input type="text" value={title} onChange={(e) => handleTextChange(e)}/>
-            <button type='button' className='submit' onClick={handleSubmit}>ADD</button>
-        </div>
-        <div className='addtextcont'>
-        <div>
-         {workList.map((item)=>{
-          return(<>
-            <WorkTitle title={item} workList={workList} setWorkList={setWorkList}></WorkTitle>
-          </>)
-         })}
-        </div>
-        </div>
-       
+    <div className="app-container">
+      <h1>TODO LIST</h1>
+      {/* Input form */}
+      <form onSubmit={handleSubmit} className="form-container">
+        <input
+          type="text"
+          value={title}
+          onChange={handleInputChange}
+          placeholder="Enter a task"
+          className="input-field"
+        />
+        <button type="submit" className="add-button">
+          ADD
+        </button>
+      </form>
+
+      {/* Task list */}
+      <div className="task-list">
+        {workList.map((item, index) => (
+          <WorkTitle
+            key={index}
+            title={item}
+            workList={workList}
+            setWorkList={setWorkList}
+          />
+        ))}
       </div>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
